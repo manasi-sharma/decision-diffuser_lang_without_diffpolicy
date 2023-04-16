@@ -117,6 +117,7 @@ class TemporalUnet(nn.Module):
         condition_dropout=0.1,
         calc_energy=False,
         kernel_size=5,
+        lang_dim=384,
     ):
         super().__init__()
 
@@ -147,7 +148,8 @@ class TemporalUnet(nn.Module):
 
         if self.returns_condition:
             self.returns_mlp = nn.Sequential(
-                        nn.Linear(1, dim),
+                        #nn.Linear(1, dim),
+                        nn.Linear(lang_dim, dim),
                         act_fn,
                         nn.Linear(dim, dim * 4),
                         act_fn,
@@ -220,7 +222,7 @@ class TemporalUnet(nn.Module):
             if force_dropout:
                 returns_embed = 0*returns_embed
             
-            returns_embed_reshaped = returns_embed.reshape(1, 1, -1).cpu()
+            #returns_embed_reshaped = returns_embed.reshape(1, 1, -1).cpu()
             #t_reshaped = t.reshape(1, 1, -1).cpu()
             #attn_output, attn_output_weights = self.multihead_attn_1(query=returns_embed_reshaped, key=t_reshaped, value=t_reshaped)
             #t = attn_output.squeeze(0).to(torch.device('cuda:0'))

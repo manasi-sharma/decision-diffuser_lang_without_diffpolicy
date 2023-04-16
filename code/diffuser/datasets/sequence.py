@@ -122,12 +122,11 @@ class SequenceDataset(torch.utils.data.Dataset):
         trajectories = np.concatenate([actions, observations], axis=-1)
 
         if self.include_returns:
-            rewards = self.fields.rewards[path_ind, start:]
+            """rewards = self.fields.rewards[path_ind, start:]
             discounts = self.discounts[:len(rewards)]
             returns = (discounts * rewards).sum()
-            other_returns = np.array([returns/self.returns_scale], dtype=np.float32)
-            returns = self.fields.lang[path_ind, start:]
-            import pdb;pdb.set_trace()
+            other_returns = np.array([returns/self.returns_scale], dtype=np.float32)"""
+            returns = self.fields.lang[path_ind, start:][0]
             batch = RewardBatch(trajectories, conditions, returns)
         else:
             batch = Batch(trajectories, conditions)
