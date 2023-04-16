@@ -183,7 +183,7 @@ class Trainer(object):
         if self.save_checkpoints:
             savepath = os.path.join(savepath, f'state_attn_{self.step}.pt')
         else:
-            savepath = os.path.join(savepath, 'state_lang.pt')
+            savepath = os.path.join(savepath, 'state.pt')
         torch.save(data, savepath)
         logger.print(f'[ utils/training ] Saved model to {savepath}')
 
@@ -191,7 +191,7 @@ class Trainer(object):
         '''
             loads model and ema from disk
         '''
-        loadpath = os.path.join(self.bucket, logger.prefix, f'checkpoint/state_lang.pt')
+        loadpath = os.path.join(self.bucket, logger.prefix, f'checkpoint/state.pt')
         # data = logger.load_torch(loadpath)
         data = torch.load(loadpath)
 
