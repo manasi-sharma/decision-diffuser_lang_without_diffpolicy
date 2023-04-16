@@ -6,7 +6,7 @@ class Config(ParamsProto):
     # misc
     seed = 100
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    bucket = '/iliad/u/manasis/decision-diffuser-updated/code/weights/'
+    bucket = '/iliad/u/manasis/decision-diffuser_lang_without_diffpolicy/code/weights/'
     dataset = 'hopper-medium-expert-v2'
 
     ## model

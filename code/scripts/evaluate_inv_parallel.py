@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/iliad/u/manasis/decision-diffuser-updated/code/')
+sys.path.append('/iliad/u/manasis/decision-diffuser_lang_without_diffpolicy/code/')
 
 import diffuser.utils as utils
 from ml_logger import logger

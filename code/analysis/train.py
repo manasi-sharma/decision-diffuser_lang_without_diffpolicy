@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/iliad/u/manasis/decision-diffuser-updated/code/')
+sys.path.append('/iliad/u/manasis/decision-diffuser_lang_without_diffpolicy/code/')
 
 if __name__ == '__main__':
     from ml_logger import logger, instr, needs_relaunch
