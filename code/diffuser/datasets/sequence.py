@@ -35,11 +35,11 @@ class SequenceDataset(torch.utils.data.Dataset):
         """Language loading in and generation of lang returns"""
         p_to_s = {
             'kettle': 'Move the kettle to the top burner',
-            'bottomknob': 'Turn the oven knob that activates the bottom burner', 
+            'bottom burner': 'Turn the oven knob that activates the bottom burner', 
             'hinge': 'Open the hinge cabinet',
             'slide': 'Open the slide cabinet',
-            'switch': 'Turn on the light switch',
-            'topknob': 'Turn the oven knob that activates the top burner',
+            'light switch': 'Turn on the light switch',
+            'top burner': 'Turn the oven knob that activates the top burner',
             'microwave': 'Open the microwave door',
         }
         subtasks = ['kettle', 'bottom burner', 'light switch', 'microwave']
