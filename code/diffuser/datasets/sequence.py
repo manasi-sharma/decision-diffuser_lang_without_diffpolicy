@@ -54,15 +54,12 @@ class SequenceDataset(torch.utils.data.Dataset):
         multimodal_embeddings = vcond(subtasks_sentence, mode="multimodal")
         representation = vector_extractor(multimodal_embeddings.cpu())
         lang_repr_indv = representation.detach().numpy()
-        import pdb;pdb.set_trace()
 
         fields = ReplayBuffer(max_n_episodes, max_path_length, termination_penalty)
-        #import pdb;pdb.set_trace
         for i, episode in enumerate(itr):
-            #t1 = time()
+            lang_repr = np.repeat(lang_repr_indv, episode['observations'].shape[0], axis=0)
+            episode['lang'] = lang_repr
             fields.add_path(episode)
-            #print("\n\n\nLOSS TIME: ", time()-t1, "\n\n\n")
-            import pdb;pdb.set_trace()
         fields.finalize()
 
         self.normalizer = DatasetNormalizer(fields, normalizer, path_lengths=fields['path_lengths'])
