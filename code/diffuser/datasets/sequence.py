@@ -10,6 +10,8 @@ from .buffer import ReplayBuffer
 
 from time import time
 
+from voltron import instantiate_extractor, load
+
 RewardBatch = namedtuple('Batch', 'trajectories conditions returns')
 Batch = namedtuple('Batch', 'trajectories conditions')
 ValueBatch = namedtuple('ValueBatch', 'trajectories conditions values')
@@ -29,6 +31,30 @@ class SequenceDataset(torch.utils.data.Dataset):
         self.use_padding = use_padding
         self.include_returns = include_returns
         itr = sequence_dataset(env, self.preprocess_fn)
+
+        """Language loading in and generation of lang returns"""
+        p_to_s = {
+            'kettle': 'Move the kettle to the top burner',
+            'bottomknob': 'Turn the oven knob that activates the bottom burner', 
+            'hinge': 'Open the hinge cabinet',
+            'slide': 'Open the slide cabinet',
+            'switch': 'Turn on the light switch',
+            'topknob': 'Turn the oven knob that activates the top burner',
+            'microwave': 'Open the microwave door',
+        }
+        subtasks = ['kettle', 'bottom burner', 'light switch', 'microwave']
+        subtasks_sentence_list = [p_to_s[subtask] for subtask in subtasks]
+        subtasks_sentence = ', and '.join(subtasks_sentence_list)
+        subtasks_sentence += ', in any order'
+        subtasks_sentence = subtasks_sentence.lower().capitalize()
+
+        #Language embedding model
+        vcond, preprocess = load("v-cond", device="cuda", freeze=True)
+        vector_extractor = instantiate_extractor(vcond)()
+        multimodal_embeddings = vcond(subtasks_sentence, mode="multimodal")
+        representation = vector_extractor(multimodal_embeddings.cpu())
+        lang_repr_indv = representation.detach().numpy()
+        import pdb;pdb.set_trace()
 
         fields = ReplayBuffer(max_n_episodes, max_path_length, termination_penalty)
         #import pdb;pdb.set_trace
