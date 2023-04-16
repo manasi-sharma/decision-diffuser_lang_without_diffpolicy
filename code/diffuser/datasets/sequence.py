@@ -33,10 +33,10 @@ class SequenceDataset(torch.utils.data.Dataset):
         fields = ReplayBuffer(max_n_episodes, max_path_length, termination_penalty)
         #import pdb;pdb.set_trace
         for i, episode in enumerate(itr):
-            t1 = time()
+            #t1 = time()
             fields.add_path(episode)
             #print("\n\n\nLOSS TIME: ", time()-t1, "\n\n\n")
-            #import pdb;pdb.set_trace()
+            import pdb;pdb.set_trace()
         fields.finalize()
 
         self.normalizer = DatasetNormalizer(fields, normalizer, path_lengths=fields['path_lengths'])
@@ -48,8 +48,6 @@ class SequenceDataset(torch.utils.data.Dataset):
         self.n_episodes = fields.n_episodes
         self.path_lengths = fields.path_lengths
         self.normalize()
-
-        import pdb;pdb.set_trace()
 
         print(fields)
         # shapes = {key: val.shape for key, val in self.fields.items()}
