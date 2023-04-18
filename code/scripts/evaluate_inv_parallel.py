@@ -14,6 +14,9 @@ from diffuser.datasets.d4rl import suppress_output
 
 from time import time
 
+from voltron import instantiate_extractor, load
+
+
 def evaluate(**deps):
     from ml_logger import logger, RUN
     from config.locomotion_config import Config
