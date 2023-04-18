@@ -169,7 +169,7 @@ def evaluate(**deps):
     #import pdb;pdb.set_trace()
     returns = representation.repeat(num_eval, 1)
     returns = to_device(returns, device)
-    returns=None
+    #returns=None
 
     t = 0
     obs_list = [env.reset()[None] for env in env_list]
