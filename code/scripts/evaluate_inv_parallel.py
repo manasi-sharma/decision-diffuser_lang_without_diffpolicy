@@ -140,7 +140,32 @@ def evaluate(**deps):
     episode_rewards = [0 for _ in range(num_eval)]
 
     assert trainer.ema_model.condition_guidance_w == Config.condition_guidance_w
-    returns = to_device(Config.test_ret * torch.ones(num_eval, 1), device)
+    #returns = to_device(Config.test_ret * torch.ones(num_eval, 1), device)
+
+    """Language loading in and generation of lang returns"""
+    p_to_s = {
+        'kettle': 'Move the kettle to the top burner',
+        'bottom burner': 'Turn the oven knob that activates the bottom burner', 
+        'hinge': 'Open the hinge cabinet',
+        'slide': 'Open the slide cabinet',
+        'light switch': 'Turn on the light switch',
+        'top burner': 'Turn the oven knob that activates the top burner',
+        'microwave': 'Open the microwave door',
+    }
+    subtasks = ['kettle', 'bottom burner', 'light switch', 'microwave']
+    subtasks_sentence_list = [p_to_s[subtask] for subtask in subtasks]
+    subtasks_sentence = ', and '.join(subtasks_sentence_list)
+    subtasks_sentence += ', in any order'
+    subtasks_sentence = subtasks_sentence.lower().capitalize()
+
+    #Language embedding model
+    vcond, preprocess = load("v-cond", device="cuda", freeze=True)
+    vector_extractor = instantiate_extractor(vcond)()
+    multimodal_embeddings = vcond(subtasks_sentence, mode="multimodal")
+    representation = vector_extractor(multimodal_embeddings.cpu())
+    import pdb;pdb.set_trace()
+    returns = representation.repeat(num_eval)
+    returns = to_device(returns, device)
 
     t = 0
     obs_list = [env.reset()[None] for env in env_list]
@@ -148,18 +173,12 @@ def evaluate(**deps):
     recorded_obs = [deepcopy(obs[:, None])]
 
     while sum(dones) <  num_eval:
-        #t1 = time()
-
-        #import pdb;pdb.set_trace()
         obs = dataset.normalizer.normalize(obs, 'observations')
         conditions = {0: to_torch(obs, device=device)}
-        #import pdb;pdb.set_trace()
         samples = trainer.ema_model.conditional_sample(conditions, returns=returns, verbose=False)
         obs_comb = torch.cat([samples[:, 0, :], samples[:, 1, :]], dim=-1)
         obs_comb = obs_comb.reshape(-1, 2*observation_dim)
         action = trainer.ema_model.inv_model(obs_comb)
-        #print("\n\n\ntime diff: ", time()-t1)
-        #import pdb;pdb.set_trace()
 
         samples = to_np(samples)
         action = to_np(action)
@@ -189,8 +208,6 @@ def evaluate(**deps):
                     pass
                 else:
                     episode_rewards[i] += this_reward
-
-        #print("\n\n\ntime for 1 run: ", time()-t1)
 
         obs = np.concatenate(obs_list, axis=0)
         recorded_obs.append(deepcopy(obs[:, None]))

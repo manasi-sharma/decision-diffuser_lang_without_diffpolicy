@@ -130,7 +130,6 @@ class SequenceDataset(torch.utils.data.Dataset):
             batch = RewardBatch(trajectories, conditions, returns)
         else:
             batch = Batch(trajectories, conditions)
-        #print("\n\n\nLOSS TIME: ", time()-t1, "\n\n\n")
 
         return batch
 
