@@ -166,9 +166,10 @@ def evaluate(**deps):
     vector_extractor = instantiate_extractor(vcond)()
     multimodal_embeddings = vcond(subtasks_sentence, mode="multimodal")
     representation = vector_extractor(multimodal_embeddings.cpu())
-    import pdb;pdb.set_trace()
+    #import pdb;pdb.set_trace()
     returns = representation.repeat(num_eval, 1)
     returns = to_device(returns, device)
+    returns=None
 
     t = 0
     obs_list = [env.reset()[None] for env in env_list]
