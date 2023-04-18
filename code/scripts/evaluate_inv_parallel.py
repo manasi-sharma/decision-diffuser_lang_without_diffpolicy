@@ -198,7 +198,6 @@ def evaluate(**deps):
         obs_list = []
         for i in range(num_eval):
             this_obs, this_reward, this_done, _ = env_list[i].step(action[i])
-            print("reward: ", this_reward)
             obs_list.append(this_obs[None])
             if this_done:
                 if dones[i] == 1:
