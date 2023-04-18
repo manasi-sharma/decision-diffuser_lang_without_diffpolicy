@@ -167,7 +167,7 @@ def evaluate(**deps):
     multimodal_embeddings = vcond(subtasks_sentence, mode="multimodal")
     representation = vector_extractor(multimodal_embeddings.cpu())
     import pdb;pdb.set_trace()
-    returns = representation.repeat(num_eval)
+    returns = representation.repeat(num_eval, 1)
     returns = to_device(returns, device)
 
     t = 0
